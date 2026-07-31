@@ -11,17 +11,19 @@
     run_next: IN_SOFT_PARALLEL
     commands: |-
       export ANDROID_HOME="/opt/android/sdk"
-      export PATH="$ANDROID_HOME/cmdline-tools/tools/bin:$ANDROID_HOME/platform-tools:$PATH"
+      export PATH="$ANDROID_HOME/cmdline-tools/bin:$ANDROID_HOME/platform-tools:$PATH"
 
-      mkdir -p "$ANDROID_HOME/cmdline-tools/tools"
+      mkdir -p "$ANDROID_HOME/cmdline-tools"
       curl -o sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
-      unzip -q sdk.zip -d "$ANDROID_HOME/cmdline-tools/tools"
+      unzip -q sdk.zip -d "$ANDROID_HOME/cmdline-tools"
       rm sdk.zip
 
-      echo "y" | sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0" > /dev/null
+      mv "$ANDROID_HOME/cmdline-tools/cmdline-tools" "$ANDROID_HOME/cmdline-tools/bin" 2>/dev/null || true
+
+      echo "y" | $ANDROID_HOME/cmdline-tools/bin/sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0" > /dev/null 2>&1
 
       chmod +x gradlew
-      ./gradlew assembleDebug --no-daemon
+      ./gradlew assembleRelease --no-daemon
     setup_commands: apt-get update && apt-get install -y unzip curl
     cached_dirs:
     - /root/.gradle
