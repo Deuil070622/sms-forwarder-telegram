@@ -30,3 +30,10 @@
     shell: BASH
     docker_image_name: library/eclipse-temurin
     docker_image_tag: 25
+  - action: Publish my artifact artifact
+    type: PUBLISH_ARTIFACT_VERSION
+    local_path: app/build/outputs/apk/debug/app-debug.apk
+    input_type: BUILD_ARTIFACTS
+    versions:
+    - latest
+    artifact: my artifact
