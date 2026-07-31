@@ -10,19 +10,18 @@
     type: BUILD
     commands: |-
       export ANDROID_HOME="/opt/android/sdk"
-      export PATH=$PATH:/opt/android/sdk/cmdline-tools/tools/bin
+      export PATH=$PATH:/opt/android/sdk/cmdline-tools:/opt/android/sdk/platform-tools
+
       if [ ! -d "$ANDROID_HOME/cmdline-tools" ]; then
-       curl -o sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip
-       unzip sdk.zip
-       rm sdk.zip
-       mkdir "$ANDROID_HOME/cmdline-tools"
-       mv cmdline-tools "$ANDROID_HOME/cmdline-tools/tools"
-       yes | "$ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager" --licenses
+          mkdir -p "$ANDROID_HOME/cmdline-tools"
+          curl -o sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+          unzip -q sdk.zip -d "$ANDROID_HOME/cmdline-tools"
+          mv "$ANDROID_HOME/cmdline-tools/cmdline-tools" "$ANDROID_HOME/cmdline-tools/tools" 2>/dev/null || true
+          rm sdk.zip
       fi
 
       chmod +x gradlew
-      ./gradlew assembleDebug
-      ./gradlew assembleRelease
+      ./gradlew assembleDebug --no-daemon
     setup_commands: apt-get update && apt-get install -y unzip curl
     cached_dirs:
     - /root/.gradle
